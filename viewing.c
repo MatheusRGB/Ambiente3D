@@ -25,7 +25,15 @@ void desenharBola() {
     glutSolidSphere(1.5, 40, 40);
 }
 void desenharToroide() {
-    glColor3f(0.0, 1.0, 0.5);
+    float kd[4] = {0.0f, 1.0f, 0.5f, 1.0f}; 
+    float ks[4] = {0.9f, 0.9f, 0.9f, 1.0f};
+    float ns = 70.0f;
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, kd);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, ks);
+    glMaterialf(GL_FRONT, GL_SHININESS, ns);
+
+    //glColor3f(0.0, 1.0, 0.5);
     glutSolidTorus(0.3, 1.0, 30, 30);
 }
 
