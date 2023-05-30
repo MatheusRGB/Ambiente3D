@@ -1,7 +1,7 @@
 #include <GL/glut.h>
 
 void desenharBule() {
-    float kd[4] = {0.0f, 0.0f, 1.0f, 1.0f}; 
+    float kd[4] = {0.0f, 0.0f, 1.0f, 1.0f};
     float ks[4] = {0.9f, 0.9f, 0.9f, 1.0f};
     float ns = 100.0f;
 
@@ -13,7 +13,7 @@ void desenharBule() {
     glutSolidTeapot(0.7);
 }
 void desenharBola() {
-    float kd[4] = {1.0f, 0.7f, 0.0f, 1.0f}; 
+    float kd[4] = {1.0f, 0.7f, 0.0f, 1.0f};
     float ks[4] = {0.9f, 0.9f, 0.9f, 1.0f};
     float ns = 70.0f;
 
@@ -25,7 +25,7 @@ void desenharBola() {
     glutSolidSphere(0.8, 100, 100);
 }
 void desenharToro() {
-    float kd[4] = {0.0f, 1.0f, 0.5f, 1.0f}; 
+    float kd[4] = {0.0f, 1.0f, 0.5f, 1.0f};
     float ks[4] = {0.9f, 0.9f, 0.9f, 1.0f};
     float ns = 70.0f;
 
@@ -37,7 +37,7 @@ void desenharToro() {
     glutSolidTorus(0.2, 1.0, 30, 30);
 }
 void desenhaChao() {
-    float kd[4] = {1.0f, 0.0f, 0.0f, 1.0f}; 
+    float kd[4] = {1.0f, 0.0f, 0.0f, 1.0f};
     float ks[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     float ns = 70.0f;
 
@@ -49,7 +49,7 @@ void desenhaChao() {
     glutSolidCube(1.0f);
 }
 void desenhaParEsq() {
-    float kd[4] = {1.0f, 0.0f, 0.0f, 1.0f}; 
+    float kd[4] = {2.0f, 0.0f, 0.0f, 1.0f};
     float ks[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     float ns = 70.0f;
 
@@ -57,11 +57,11 @@ void desenhaParEsq() {
     glMaterialfv(GL_FRONT, GL_SPECULAR, ks);
     glMaterialf(GL_FRONT, GL_SHININESS, ns);
 
-    glScalef(2.0, 0.1, 17.0);
+    glScalef(2.0, 0.1, 10.5);
     glutSolidCube(0.5f);
 }
 void desenhaParDir() {
-    float kd[4] = {1.0f, 0.0f, 0.0f, 1.0f}; 
+    float kd[4] = {2.0f, 0.0f, 0.0f, 1.0f};
     float ks[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     float ns = 70.0f;
 
@@ -69,8 +69,8 @@ void desenhaParDir() {
     glMaterialfv(GL_FRONT, GL_SPECULAR, ks);
     glMaterialf(GL_FRONT, GL_SHININESS, ns);
 
-    glScalef(40.0, 0.1, 1.0);
-    glutSolidCube(0.5f);
+    glScalef(5.5, 0.1, 1.0);
+    glutSolidCube(0.9f);
 }
 void lighting() {
     float position[4] = {2.0f, 2.0f, 2.0f, 1.0f};
@@ -103,39 +103,60 @@ int init() {
     gluPerspective(85.0, 1.0, 1.5, 100.0);
     lighting();
     glFlush();
-    
+
 }
 
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
-    
-    glTranslatef(-1.5, 0.0, 0.0);
+    //OBJETOS
+    //BULE
+    glPushMatrix();
+    glTranslatef(-1.9, -0.5, 0.5);
     desenharBule();
+    glPopMatrix();
 
-    glTranslatef(2.0, 0.3, -1.0);
+    //BOLA
+    glPushMatrix();
+    glTranslatef(1.0, -0.9, -1.0);
     desenharBola();
+    glPopMatrix();
 
-    glTranslatef(2.5, -1.5, 1.0);
+    //TORO
+    glPushMatrix();
+    glTranslatef(0.9, -1.5, 1.5);
     glRotatef(90.0,1.0, 0.0, 0.0);
-    glTranslatef(-2.5, 1.5, -1.0);
+    //glTranslatef(-2.5, 1.5, -1.0);
     desenharToro();
+    glPopMatrix();
 
-    glTranslatef(-5.0, -2.0, -0.5);
-    glRotatef(90.0,1.0, 0.1, 0.0);
-    glTranslatef(5.0, 2.0, 0.5);
+    //AMBIENTE
+    //CHAO
+    glPushMatrix();
+    glTranslatef(0.0, -2.0, 0.0);
+    //glRotatef(90.0,1.0, 0.1, 0.0);
+    //glTranslatef(5.0, 2.0, 0.5);
     desenhaChao();
+    glPopMatrix();
 
-    glTranslatef(-1.6, 0.0, 1.0);
-    glRotatef(90.0,1.0, 0.0, 0.0);
-    glTranslatef(1.6, 0.0, -1.0);
-    desenhaParEsq();
-    
-    glTranslatef(1.0, -0.6, -1.2);
+    //PAREDE_ESQ
+    glPushMatrix();
+    glTranslatef(-0.4, -1.0, -2.3);
+    glRotatef(90.0,0.0, 1.0, 0.0);
     glRotatef(90.0,0.0, 0.0, 1.0);
-    glTranslatef(-1.0, 0.6, 1.2);
+    //glTranslatef(1.6, 0.0, -1.0);
+    desenhaParEsq();
+    glPopMatrix();
+
+    //PAREDE_DIR
+    glPushMatrix();
+    glTranslatef(2.0, -0.9, 0.5);
+    glRotatef(90.0, 1.0, 0.0, 0.0);
+    glRotatef(90.0,0.0, 0.0, 1.0);
+    //glRotatef(90.0,0.0, 0.0, 1.0);
     desenhaParDir();
+    glPopMatrix();
 
     glFlush();
 }
