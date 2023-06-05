@@ -1,5 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
 #include <GL/glut.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
+//OBJETOS
 void desenharBule() {
     float kd[4] = {0.2f, 0.4f, 1.0f, 1.0f};
     float ks[4] = {0.9f, 0.9f, 0.9f, 1.0f};
@@ -9,7 +15,6 @@ void desenharBule() {
     glMaterialfv(GL_FRONT, GL_SPECULAR, ks);
     glMaterialf(GL_FRONT, GL_SHININESS, ns);
 
-    //glColor3f(0.0, 0.0, 1.0);
     glutSolidTeapot(0.7);
 }
 void desenharBola() {
@@ -21,7 +26,6 @@ void desenharBola() {
     glMaterialfv(GL_FRONT, GL_SPECULAR, ks);
     glMaterialf(GL_FRONT, GL_SHININESS, ns);
 
-    //glColor3f(1.0, 0.7, 0.0);
     glutSolidSphere(0.9, 100, 100);
 }
 void desenharToro() {
@@ -72,6 +76,8 @@ void desenhaParDir() {
     glScalef(6.5, 0.1, 1.6);
     glutSolidCube(0.9f);
 }
+
+//ILUMINAÇÃO
 void lighting() {
     //FONTE DE LUZ LOCAL
     float position[4] = {5.0, 15, -3, 1.0f};
@@ -88,36 +94,92 @@ void lighting() {
     glEnable(GL_LIGHT0);
 }
 
-// Função de exibição
+
+float cam_x = -5.0;
+float cam_z = 5.0;
+// FUNÇÃO DE CAMERA
 int init() {
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+
     glEnable(GL_DEPTH_TEST);
+
+    //SUPERFICIE OCULTA (Z-BUFFER)
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(-5, 2, 5.0,
+
+    //DEFINIÇÃO DA CAMERA
+    gluLookAt(cam_x, 2.0, cam_z,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
-    gluPerspective(60.0, 1.0, 1.5, 100.0);
-    lighting();
-    glFlush();
 
+    //PERSPECTIVA
+    gluPerspective(60.0, 1.0, 1.0, 50.0);
+
+    lighting();
+
+    glFlush();
+    glutPostRedisplay();
+
+}
+
+void zoom_up(){
+    cam_x = cam_x + 0.1;
+    cam_z = cam_z - 0.1;
+
+    glLoadIdentity();
+    gluLookAt(cam_x, 2.0, cam_z,
+            0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0);
+
+    glutPostRedisplay();
+}
+
+void zoom_down(){
+    cam_x = cam_x - 0.1;
+    cam_z = cam_z + 0.1;
+
+    glLoadIdentity();
+    gluLookAt(cam_x, 2.0, cam_z,
+            0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0);
+
+    glutPostRedisplay();
+}
+
+void zoom(int key, int x, int y){
+    switch(key){
+        case GLUT_KEY_UP:
+            zoom_up();
+            break;
+
+        case GLUT_KEY_DOWN:
+            zoom_down();
+            break;
+
+        default:
+            break;
+    }
 }
 
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glMatrixMode(GL_MODELVIEW);
+
     //OBJETOS
+
     //BULE
+    glDisable(GL_CULL_FACE);
     glPushMatrix();
-    glTranslatef(-1.9, -0.5, 0.5);
+    glTranslatef(-1.9, -1.0, 0.5);
     desenharBule();
     glPopMatrix();
+    glEnable(GL_CULL_FACE);
 
     //BOLA
     glPushMatrix();
@@ -129,16 +191,14 @@ void display(){
     glPushMatrix();
     glTranslatef(-0.2, -1.5, 1.6);
     glRotatef(90.0,1.0, 0.0, 0.0);
-    //glTranslatef(-2.5, 1.5, -1.0);
     desenharToro();
     glPopMatrix();
 
     //AMBIENTE
+
     //CHAO
     glPushMatrix();
     glTranslatef(0.0, -2.0, 0.0);
-    //glRotatef(90.0,1.0, 0.1, 0.0);
-    //glTranslatef(5.0, 2.0, 0.5);
     desenhaChao();
     glPopMatrix();
 
@@ -147,7 +207,6 @@ void display(){
     glTranslatef(-0.28, -1.18, -2.7);
     glRotatef(90.0,0.0, 1.0, 0.0);
     glRotatef(90.0,0.0, 0.0, 1.0);
-    //glTranslatef(1.6, 0.0, -1.0);
     desenhaParEsq();
     glPopMatrix();
 
@@ -156,22 +215,24 @@ void display(){
     glTranslatef(2.4, -1.1, -0.1);
     glRotatef(90.0, 1.0, 0.0, 0.0);
     glRotatef(90.0,0.0, 0.0, 1.0);
-    //glRotatef(90.0,0.0, 0.0, 1.0);
     desenhaParDir();
     glPopMatrix();
 
     glFlush();
 }
 
+
 int main(int argc, char** argv) {
    glutInit(&argc, argv);
-   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
    glutInitWindowPosition(200, 0);
    glutInitWindowSize(600, 600);
    glutCreateWindow("Formas 3D");
    init();
 
+   glutSpecialFunc(zoom);
    glutDisplayFunc(display);
+
    glutMainLoop();
    return 0;
 }
