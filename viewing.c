@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <GL/glut.h>
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
 
 //OBJETOS
 void desenharBule() {
