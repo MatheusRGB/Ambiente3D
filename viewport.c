@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
 #include <GL/glut.h>
 
 void desenharBule() {
@@ -40,10 +43,12 @@ int init() {
     glFlush();
 
 }
+
+//ROTAÇÃO
 float a = 0.0f;
 void atualizaRotacao(int valor) {
     a += 1.0f;
-    
+
     if(a > 360.0f) {
         a -= 360.0f;
     }
@@ -51,13 +56,26 @@ void atualizaRotacao(int valor) {
     glutTimerFunc(25, atualizaRotacao, 0);
 }
 
+//1 View
+float cam_zA = 5.0;
+
+//2 View
+float cam_xB = 5.0;
+
+//3 View
+float cam_yC = 5.0;
+
+//4 View
+float cam_xD = 3.0;
+float cam_zD = 5.0;
+
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // PRIMEIRO VIEWPORT
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0.0, 0.0, 5.0, //POSIÇÃO DA CÂMERA
+    gluLookAt(0.0, 0.0, cam_zA, //POSIÇÃO DA CÂMERA
               0.0, 0.0, 0.0, //PARA ONDE A CAMERA APONTA
               0.0, 1.0, 0.0);//VETOR VIEW-UP
     glPushMatrix();
@@ -69,7 +87,7 @@ void display(){
     // SEGUNDO VIEWPORT
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(5.0, 0.0, 0.0, //POSIÇÃO DA CÂMERA
+    gluLookAt(cam_xB, 0.0, 0.0, //POSIÇÃO DA CÂMERA
               0.0, 0.0, 0.0, //PARA ONDE A CAMERA APONTA
               0.0, 1.0, 0.0);//VETOR VIEW-UP
     glPushMatrix();
@@ -81,7 +99,7 @@ void display(){
     // TERCEIRO VIEWPORT
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0.0, 5.0, 0.0, //POSIÇÃO DA CÂMERA
+    gluLookAt(0.0, cam_yC, 0.0, //POSIÇÃO DA CÂMERA
               0.0, 0.0, 0.0, //PARA ONDE A CAMERA APONTA
               0.0, 1.0, -1.0);//VETOR VIEW-UP
     glPushMatrix();
@@ -93,7 +111,7 @@ void display(){
     // QUARTO VIEWPORT
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(3.0, 2.0, 5.0, //POSIÇÃO DA CÂMERA
+    gluLookAt(cam_xD, 2.0, cam_zD, //POSIÇÃO DA CÂMERA
               0.0, 0.0, 0.0, //PARA ONDE A CAMERA APONTA
               0.0, 1.0, 0.0);//VETOR VIEW-UP
     glPushMatrix();
@@ -101,8 +119,43 @@ void display(){
         glRotated(a,0,1,0);
         desenharBule();
     glPopMatrix();
-    
+
     glutSwapBuffers();
+}
+
+void zoom_up(){
+    cam_zA = cam_zA - 0.1;
+    cam_xB = cam_xB - 0.1;
+    cam_yC = cam_yC - 0.1;
+
+    cam_xD = cam_xD - 0.1;
+    cam_zD = cam_zD - 0.1;
+
+}
+
+void zoom_down(){
+    cam_zA = cam_zA + 0.1;
+    cam_xB = cam_xB + 0.1;
+    cam_yC = cam_yC + 0.1;
+
+    cam_xD = cam_xD + 0.1;
+    cam_zD = cam_zD + 0.1;
+
+}
+
+void zoom(int key, int x, int y){
+    switch(key){
+        case GLUT_KEY_UP:
+            zoom_up();
+            break;
+
+        case GLUT_KEY_DOWN:
+            zoom_down();
+            break;
+
+        default:
+            break;
+    }
 }
 
 int main(int argc, char** argv) {
@@ -113,6 +166,7 @@ int main(int argc, char** argv) {
    glutCreateWindow("Viewport");
    init();
 
+   glutSpecialFunc(zoom);
    glutDisplayFunc(display);
    glutTimerFunc(25, atualizaRotacao, 0);
    glutMainLoop();
